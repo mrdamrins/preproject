@@ -40,14 +40,16 @@ public class UserServiceImp implements UserService {
   @Override
   @Transactional
   public void deleteUser(Long uid) {
-    userDao.deleteUser(uid);
+    User user = userDao.getUserById(uid);
+    user.setRoles(null);
+    userDao.deleteUser(user);
   }
 
   @Override
   @Transactional
   public void updateUser(User user) {
     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-    userDao.createUser(user);
+    userDao.updateUser(user);
   }
 
   @Override

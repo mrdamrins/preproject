@@ -22,12 +22,12 @@ public class UserDAOImp implements UserDAO {
 
   @Override
   public void createUser(User newUser) {
-    entityManager.merge(newUser);
+    entityManager.persist(newUser);
   }
 
   @Override
-  public void deleteUser(Long uid) {
-    entityManager.remove(getUserById(uid));
+  public void deleteUser(User user) {
+    entityManager.remove(user);
   }
 
   @Override
