@@ -1,13 +1,12 @@
 package springCrud.service;
 
 
-import springCrud.model.User;
-
 import java.util.List;
+import springCrud.model.User;
 
 public interface UserService {
 
-  void createUser(User newUser);
+  boolean createUser(User newUser);
 
   void deleteUser(Long uid);
 
@@ -16,5 +15,7 @@ public interface UserService {
   List<User> getAllUsers();
 
   User getUserById(Long id);
+
+  User getUserByUsername(String username);
 
 }

@@ -1,16 +1,19 @@
 package springCrud.DAO;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import springCrud.model.User;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 public class UserDAOImp implements UserDAO {
 
-  @PersistenceContext(unitName = "entityManagerFactory")
+  @PersistenceContext
   private EntityManager entityManager;
+
 
   @Override
   public List<User> getAllUsers() {
@@ -19,7 +22,7 @@ public class UserDAOImp implements UserDAO {
 
   @Override
   public void createUser(User newUser) {
-    entityManager.persist(newUser);
+    entityManager.merge(newUser);
   }
 
   @Override
@@ -35,5 +38,17 @@ public class UserDAOImp implements UserDAO {
   @Override
   public User getUserById(Long uid) {
     return entityManager.find(User.class, uid);
+  }
+
+  @Override
+  public User getUserByUsername(String username) {
+    TypedQuery<User> user = entityManager
+        .createQuery("FROM User WHERE username = :username", User.class)
+        .setParameter("username", username);
+    return user
+        .getResultList()
+        .stream()
+        .findAny()
+        .orElse(null);
   }
 }

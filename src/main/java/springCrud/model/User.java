@@ -1,106 +1,92 @@
 package springCrud.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
   @Id
+  @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "uid")
-  private Long id;
+  private long id;
 
-  @Column(name = "name")
-  private String name;
+  @Column(name = "username", unique = true, nullable = false)
+  private String username;
 
   @Column(name = "password")
   private String password;
 
-  @Column(name = "role")
-  private String role;
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinTable(name = "user_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles;
 
   public User() {
   }
 
-  public User(Long id, String name, String password, String role) {
-    this.id = id;
-    this.name = name;
-    this.password = password;
-    this.role = role;
-  }
-
-  public User(String name, String password, String role) {
-    this.name = name;
-    this.password = password;
-    this.role = role;
-  }
-
-  public String getRole() {
-    return role;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
-
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  @Override
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
   }
 
   public void setPassword(String password) {
     this.password = password;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    User user = (User) o;
-    if (!id.equals(user.id)) {
-      return false;
-    }
-    if (!name.equals(user.name)) {
-      return false;
-    }
-    if (!password.equals(user.password)) {
-      return false;
-    }
-    return role.equals(user.role);
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
   }
 
   @Override
-  public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + password.hashCode();
-    result = 31 * result + role.hashCode();
-    return result;
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return getRoles();
   }
 
   @Override
-  public String toString() {
-    return "User: " + "id=" + id + ", name=" + name + ", password=" + password + ", role=" + role;
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }
-

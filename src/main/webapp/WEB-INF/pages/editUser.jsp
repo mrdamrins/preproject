@@ -1,53 +1,31 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page isELIgnored="false" %>
 <html>
 <head>
-    <title>User Management Application</title>
+    <title>Edit User</title>
 </head>
 <body>
-<div style="text-align: center;">
-    <h1>User Management</h1>
-    <h2>
-        <form action="/" method="GET">
-            <input type="submit" value="List All Users">
-        </form> &nbsp;&nbsp;&nbsp;
-    </h2>
-</div>
 <div align="center">
-    <form action="/editUser" method="POST">
+    <div>
+        <a href="/logout">Logout</a>
+    </div>
+    <form action="<c:url value="/admin/editUser"/>" method="post">
         <table border="1" cellpadding="5">
-            <caption>
-                <h2>
-                    Edit User
-                </h2>
-            </caption>
+            <c:if test="${user != null}">
+                <input type="hidden" name="id" value="<c:out value='${user.id}' />" />
+            </c:if>
+            <caption><h2>Edit User</h2></caption>
             <tr>
-                <th>User ID:</th>
+                <th>Username: </th>
                 <td>
-                    <input type="text" name="id" readonly size="45"
-                           value="<c:out value='${user.id}' />"
+                    <input type="text" name="username" size="45"
+                           value="<c:out value='${user.username}' />"
                     />
                 </td>
             </tr>
             <tr>
-                <th>User Name:</th>
-                <td>
-                    <input type="text" name="name" size="45"
-                           value="<c:out value='${user.name}' />"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <th>User Role:</th>
-                <td>
-                    <input type="text" name="role" size="45"
-                           value="<c:out value='${user.role}' />"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <th>User Password:</th>
+                <th>Password: </th>
                 <td>
                     <input type="text" name="password" size="45"
                            value="<c:out value='${user.password}' />"
@@ -55,12 +33,30 @@
                 </td>
             </tr>
             <tr>
+                <th>Roles: </th>
+                <td>
+                    <c:forEach var="role" items="${user.roles}">
+                        <c:if test="${role.id == 1}">
+                            <c:set var="ROLE_USER" value="ROLE_USER" />
+                        </c:if>
+                        <c:if test="${role.id == 2}">
+                            <c:set var="ROLE_ADMIN" value="ROLE_ADMIN" />
+                        </c:if>
+                    </c:forEach>
+                    <input type="checkbox" name="role" value="ROLE_USER"
+                    <c:if test="${ROLE_USER == 'ROLE_USER'}"> checked=checked</c:if>/>USER<br>
+                    <input type="checkbox" name="role" value="ROLE_ADMIN"
+                    <c:if test="${ROLE_ADMIN == 'ROLE_ADMIN'}"> checked=checked</c:if>/>ADMIN
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2" align="center">
-                    <input type="submit" value="Save"/>
+                    <input type="submit" value="Save" />
                 </td>
             </tr>
         </table>
     </form>
 </div>
+
 </body>
 </html>
